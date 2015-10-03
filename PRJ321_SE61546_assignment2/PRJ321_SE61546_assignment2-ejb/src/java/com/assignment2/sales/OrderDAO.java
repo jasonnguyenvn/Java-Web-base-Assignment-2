@@ -294,7 +294,8 @@ public class OrderDAO implements Serializable {
                 
                 OrderDTO dto = new OrderDTO(orderID, orderDate, loginAcc, 
                                     total, address, phone);
-                this.getDetails(orderID, dto.getItems(), ds);
+                List<OrderDetailDTO> itemList = this.getDetails(orderID,  ds);
+                dto.setItems(itemList);
                 
                 result = dto;
             }
@@ -324,14 +325,14 @@ public class OrderDAO implements Serializable {
 //        return result;
 //    }
     
-    protected List<OrderDetailDTO> getDetails(String orderID,
-            List<OrderDetailDTO> itemList, DataSource ds) 
+    protected List<OrderDetailDTO> getDetails(String orderID,  DataSource ds) 
             throws SQLException,  NullPointerException {
         List<OrderDetailDTO> result;
         
         OrderDetailDAO dao = new OrderDetailDAO();
         
-        result = dao.getOrderDetailsByOrderId(orderID, itemList, ds); 
+        dao.getOrderDetailsByOrderId(orderID,  ds); 
+        result = dao.getDetailList();
         
         return result;
     }

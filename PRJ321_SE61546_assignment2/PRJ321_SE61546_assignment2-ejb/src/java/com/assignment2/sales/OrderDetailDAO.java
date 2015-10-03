@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -266,8 +267,16 @@ public class OrderDetailDAO implements Serializable {
     }
     
     
+    private List<OrderDetailDTO> detailList;
+
+    public List<OrderDetailDTO> getDetailList() {
+        return detailList;
+    }
+    
+    
+    
     public List<OrderDetailDTO> getOrderDetailsByOrderId(String orderID, 
-            List<OrderDetailDTO> itemList, DataSource ds) 
+            DataSource ds) 
             throws SQLException {
         
         Connection con = ds.getConnection();
@@ -282,6 +291,8 @@ public class OrderDetailDAO implements Serializable {
             
             rs = stm.executeQuery();
             
+            detailList = new ArrayList<OrderDetailDTO>();
+            
             while(rs.next()) {
                 int id = rs.getInt("id");
                 int quantity = rs.getInt("quantity");
@@ -295,7 +306,7 @@ public class OrderDetailDAO implements Serializable {
                 
                 OrderDetailDTO dto = new OrderDetailDTO(id, product, quantity,
                                 unitPrice, unitItem, total, orderID);
-                itemList.add(dto);
+                detailList.add(dto);
                 
             }
             
@@ -310,7 +321,7 @@ public class OrderDetailDAO implements Serializable {
             con.close();
         }
         
-        return itemList;
+        return detailList;
     }
     
     protected ProductDTO getProduct(String productID, DataSource ds) 
