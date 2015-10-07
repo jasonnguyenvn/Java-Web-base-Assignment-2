@@ -44,6 +44,12 @@ public class SearchServlet extends HttpServlet {
         String txtFromDate = request.getParameter("txtFromDate");
         String txtToDate = request.getParameter("txtToDate");
         
+        if (txtFromDate == null || txtToDate == null) {
+            log("Some user sends bad request to this action.");
+            response.sendError(404);
+            return;
+        }
+        
         OrderSearchError searchErrorObj = new OrderSearchError();
         
         Date fromDate = null, toDate = null;
@@ -60,19 +66,15 @@ public class SearchServlet extends HttpServlet {
         } catch (ParseException ex) {
             log(txtFromDate + " " + txtToDate);
             log("User input invalid to date format. " + ex.getMessage());
-            searchErrorObj.setInvalidFromDateFormatErr(("Invalid to date format"));
+            searchErrorObj.setInvalidToDateFormatErr(("Invalid to date format"));
         }
         
         
-        try {
+        if(toDate != null && fromDate != null) {
             if (toDate.compareTo(fromDate) < 0) {
                 searchErrorObj.setToDateEalierThanFromDateErr("To Date cannot "
                         + "be ealier than From Date!");
             }
-        } catch (NullPointerException ex) {
-            log("Some user sends bad request to this action.");
-            response.sendError(404);
-            return;
         }
         
         if (searchErrorObj.isRaisedErrors()) {

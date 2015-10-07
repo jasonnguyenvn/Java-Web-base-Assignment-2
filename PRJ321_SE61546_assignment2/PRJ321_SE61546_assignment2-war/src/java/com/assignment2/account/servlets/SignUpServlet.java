@@ -84,6 +84,7 @@ public class SignUpServlet extends HttpServlet {
             request.setAttribute("ERROROBJ", errorObj);
             RequestDispatcher rd = request.getRequestDispatcher(invalidPage);
             rd.forward(request, response);
+            return;
         }
         
         try {

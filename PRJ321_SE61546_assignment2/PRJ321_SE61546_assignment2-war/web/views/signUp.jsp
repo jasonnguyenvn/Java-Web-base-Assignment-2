@@ -25,7 +25,7 @@
                 </h3>
             </c:if>
         </c:if>
-        <form action="ProcessLogin" method="POST">
+        <form action="ProcessServlet" method="POST">
             <table>
                 <tr>
                     <td width="80px">Username:</td>
