@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jboss/>
+<!DOCTYPE jboss PUBLIC
+      "-//JBoss//DTD JBOSS 6.0//EN"
+      "http://www.jboss.org/j2ee/dtd/jboss_6_0.dtd">
+<jboss>
+    <enterprise-beans>
+        <session>
+            <ejb-name>AccountSessionBean</ejb-name>
+            <jndi-name>AccountBeanJNDI</jndi-name>
+            <local-jndi-name>AccountBeanLocalJNDI</local-jndi-name>
+        </session>
+        <session>
+            <ejb-name>OrderSessionBean</ejb-name>
+            <jndi-name>OrderBeanJNDI</jndi-name>
+            <local-jndi-name>OrderBeanLocalJNDI</local-jndi-name>
+        </session>
+    </enterprise-beans>
+</jboss>

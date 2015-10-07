@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author Hau
  */
-public abstract class DBErrorBaseClass implements Serializable {
+public abstract class ErrorBaseClass implements Serializable {
     private boolean raisedErrors = false;
     
     private String nullPointerErr;
