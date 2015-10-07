@@ -30,8 +30,11 @@
                 </font></h3>
             </c:if>
             
+            <c:url var="urlRewriting" value="ProcessServlet" >
+                <c:param name="btAction" value="signUp" />
+            </c:url>
             <h4>
-                <a href="Controller?btAction=signUp">
+                <a href="${urlRewriting}">
                     Click here to Sign up a new account</a>
                 <br/>
                 or Try again:

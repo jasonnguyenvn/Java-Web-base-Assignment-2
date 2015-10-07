@@ -22,6 +22,8 @@ public class ProcessServlet extends HttpServlet {
     private final String nullServlet = "actions/NullServlet";
     private final String loginServlet = "actions/LoginServlet";
     private final String searchServlet = "actions/SearchServlet";
+    private final String signUpPage = "views/signUp.html";
+    private final String signUpServlet = "actions/SignUpServlet";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -50,6 +52,12 @@ public class ProcessServlet extends HttpServlet {
                 rd.forward(request, response);
             } else if (button.equals("Search")) {
                 RequestDispatcher rd = request.getRequestDispatcher(searchServlet);
+                rd.forward(request, response);
+            } else if (button.equals("signUp")) {
+                RequestDispatcher rd = request.getRequestDispatcher(signUpPage);
+                rd.forward(request, response);
+            }  else if (button.equals("Sign Up!")) {
+                RequestDispatcher rd = request.getRequestDispatcher(signUpServlet);
                 rd.forward(request, response);
             } 
             

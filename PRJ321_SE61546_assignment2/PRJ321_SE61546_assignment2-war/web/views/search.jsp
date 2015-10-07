@@ -20,13 +20,13 @@
        
         
         
-        <form action="Controller" method="GET">
+        <form action="ProcessServlet" method="GET">
             <table>
                 <tr>
                     <td width="80px">From Date:</td>
                     <td width="200px">
                         <input style="width:200px;" type="text" 
-                               name="txtFromDate" value=" " />
+                               name="txtFromDate" value="" />
                        
                     </td>
                 </tr>
@@ -34,7 +34,7 @@
                     <td width="80px">To Date:</td>
                     <td width="200px">
                         <input style="width:200px;" type="text" 
-                               name="txtToDate" value=" " />
+                               name="txtToDate" value="" />
                          
                     </td>
                 </tr>

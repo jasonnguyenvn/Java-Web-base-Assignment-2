@@ -9,14 +9,11 @@ package com.assignment2.sale.servlets;
 import com.assignment2.sale.OrderSearchError;
 import com.assignment2.sessionBeans.OrderSessionBeanLocal;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -50,17 +47,19 @@ public class SearchServlet extends HttpServlet {
         OrderSearchError searchErrorObj = new OrderSearchError();
         
         Date fromDate = null, toDate = null;
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             fromDate = dateFormat.parse(txtFromDate);
         } catch (ParseException ex) {
-            log("User input invlaid from date format.");
+            log(txtFromDate + " " + txtToDate);
+            log("User input invalid from date format. " + ex.getMessage());
             searchErrorObj.setInvalidFromDateFormatErr(("Invalid from date format"));
         }
         try {
             toDate = dateFormat.parse(txtToDate);
         } catch (ParseException ex) {
-            log("User input invlaid to date format.");
+            log(txtFromDate + " " + txtToDate);
+            log("User input invalid to date format. " + ex.getMessage());
             searchErrorObj.setInvalidFromDateFormatErr(("Invalid to date format"));
         }
         
@@ -88,9 +87,10 @@ public class SearchServlet extends HttpServlet {
             Object obj = context.lookup("OrderBeanLocalJNDI");
             OrderSessionBeanLocal poji = (OrderSessionBeanLocal) obj;
             
-            List result = poji.searchFromDateToDate(null, null);
+            List result = poji.searchFromDateToDate(fromDate, toDate);
             
-            request.setAttribute("ORDERLIST", obj);
+            request.setAttribute("DATEFORMATTER", dateFormat);
+            request.setAttribute("ORDERLIST", result);
             RequestDispatcher rd = request.getRequestDispatcher(searchPage);
             rd.forward(request, response);
             

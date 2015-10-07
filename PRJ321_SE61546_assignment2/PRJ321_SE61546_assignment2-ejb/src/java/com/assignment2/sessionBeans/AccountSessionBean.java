@@ -6,6 +6,7 @@
 
 package com.assignment2.sessionBeans;
 
+import com.assignment2.entityBeans.Account;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -45,6 +46,22 @@ public class AccountSessionBean
             return false;
         }
     }
+
+    @Override
+    public boolean createAccount(String accountID, String customerName, 
+            String password, String email) {
+        Account acc = em.find(Account.class, accountID);
+        if (acc != null) {
+            return false;
+        }
+        
+        acc = new Account(accountID, customerName, password, email);
+        
+        em.persist(acc);
+        
+        return true;
+    }
+    
     
     
     
