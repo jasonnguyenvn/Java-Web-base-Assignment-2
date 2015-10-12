@@ -14,5 +14,10 @@
             <jndi-name>OrderBeanJNDI</jndi-name>
             <local-jndi-name>OrderBeanLocalJNDI</local-jndi-name>
         </session>
+        <session>
+            <ejb-name>OrderDetailSessionBean</ejb-name>
+            <jndi-name>OrderDetailBeanJNDI</jndi-name>
+            <local-jndi-name>OrderDetailBeanLocalJNDI</local-jndi-name>
+        </session>
     </enterprise-beans>
 </jboss>

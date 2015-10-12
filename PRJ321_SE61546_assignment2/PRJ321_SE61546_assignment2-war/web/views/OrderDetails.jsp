@@ -4,10 +4,7 @@
     Author     : Hau
 --%>
 
-<%@page import="com.assignment1.sales.OrderDetailUpdateError"%>
-<%@page import="com.assignment1.sales.OrderDetailDeleteError"%>
-<%@page import="com.assignment1.sales.OrderDetailDTO"%>
-<%@page import="com.assignment1.sales.OrderDTO"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -18,72 +15,45 @@
     <body>
         <%@include file="welcome.jsp" %>
         
-        <%
-            OrderDetailDeleteError delDetailErrorObj = 
-                    (OrderDetailDeleteError) request
-                    .getAttribute("DELDETAILERROROBJ");
-            
-            if (delDetailErrorObj != null) {
-                if (delDetailErrorObj.getCouldNotDeleteOrderDetail()!=null) {
-                    %>
-                    <h3>
-                        <font color="red">
-                        Delete Order Detail occurs error:<br/>
-                        <%= delDetailErrorObj.getCouldNotDeleteOrderDetail() %>
-                        </font>
-                    </h3>
-                    <%
-                }
-                
-                if(delDetailErrorObj.getOnlyOneDetailForOrder()!=null) {
-                     %>
-                    <h3>
-                        <font color="red">
-                        Delete Order Detail occurs error:<br/>
-                        <%= delDetailErrorObj.getOnlyOneDetailForOrder() %>
-                        </font>
-                    </h3>
-                    <%
-                }
-                
-            }
-            
-            OrderDetailUpdateError updateErrorObj =
-                    (OrderDetailUpdateError)
-                    request.getAttribute("UPDATEORDERERROROBJ");
-            
-            if(updateErrorObj != null) {
-                if(updateErrorObj.getInvalidQuantityValueErr()!=null) {
-                    %>
-                    <h3>
-                        <font color="red">
-                        Delete Order Detail occurs error:<br/>
-                        <%= updateErrorObj.getInvalidQuantityValueErr() %>
-                        </font>
-                    </h3>
-                    <%
-                }
-                
-                
-                if(updateErrorObj.getQuantityLessThanOneErr()!=null) {
-                    %>
-                    <h3>
-                        <font color="red">
-                        Delete Order Detail occurs error:<br/>
-                        <%= updateErrorObj.getQuantityLessThanOneErr() %>
-                        </font>
-                    </h3>
-                    <%
-                }
-                
-            }
-            
-            OrderDTO dto = (OrderDTO) request.getAttribute("DTO");
-            if (dto == null) {
-                response.sendError(404);
-                return;
-            }
-        %>
+        <c:set var="errorObj" value="${requestScope.ERROROBJ}" />
+        <c:if test="${not empty errorObj}" >
+            <c:if test="${not empty errorObj.couldNotDeleteOrderDetail}" >
+                <h1>
+                    <font color="red">
+                    ${errorObj.couldNotDeleteOrderDetail}
+                    </font>
+                </h1>
+            </c:if>
+        </c:if>
+        
+        <c:set var="updateErrorObj" value="${requestScope.UPDATEERROROBJ}" />
+        <c:if test="${not empty updateErrorObj}" >
+             <c:if test="${not empty updateErrorObj.couldNotUpdateErr}" >
+                <h1>
+                    <font color="red">
+                    ${updateErrorObj.couldNotUpdateErr}
+                    </font>
+                </h1>
+            </c:if>
+             
+             <c:if test="${not empty updateErrorObj.invalidQuantityValueErr}" >
+                <h1>
+                    <font color="red">
+                    ${updateErrorObj.invalidQuantityValueErr}
+                    </font>
+                </h1>
+            </c:if>
+             
+             <c:if test="${not empty updateErrorObj.quantityLessThanOneErr}" >
+                <h1>
+                    <font color="red">
+                    ${updateErrorObj.quantityLessThanOneErr}
+                    </font>
+                </h1>
+            </c:if>
+        </c:if>
+        
+        <c:set var="order" value="${requestScope.ORDEROBJ}" />
         
         <h1>Order Details</h1>
         
@@ -91,35 +61,36 @@
             <tr>
                 <td>Order ID</td>
                 <td>
-                    <%= dto.getOrderID() %>
+                    ${order.orderID}
                 </td>
                 
                 <td>Date</td>
                 <td>
-                    <%= dto.getOrderDate().toString() %>
+                    ${order.orderDate}
                 </td>
             </tr>
             <tr>
+                <c:set var="orderCust" value="${requestScope.ORDERCUST}" />
                 <td>Customer</td>
                 <td>
-                    <%= dto.getCustomer().getCustomerName() %>
+                    ${orderCust.customerName}
                 </td>
                 
                 <td>Phone</td>
                 <td>
-                    <%= dto.getPhone() %>
+                    ${order.phone}
                 </td>
             </tr>
             <tr>
                 <td>Address</td>
                 <td colspan="3">
-                    <%= dto.getAddress() %>
+                    ${order.address}
                 </td>
             </tr>
         </table>
 
-        
-        
+
+        <c:set var="itemList" value="${requestScope.ITEMLIST}" />
         <h4>Detail</h4>
         <table border="1">
             <thead>
@@ -135,75 +106,67 @@
                 </tr>
             </thead>
             <tbody>
-                <%
-                    String fromDate = request.getParameter("txtFromDate");
-                    String toDate = request.getParameter("txtToDate");
-                    int count = 1;
-                    String urlRewriting = "Controller?btAction=del_detail"
-                            + "&orderID=" + dto.getOrderID() + "&ID=";
-                    String urlRwPart2 = "&txtFromDate=" + fromDate 
-                        + "&txtToDate=" + toDate;
-                    for(OrderDetailDTO item : dto.getItems()) {
-                        
-                        String delUrl = urlRewriting + item.getId() + urlRwPart2;
-                        %>
-                        
-                         <form action="Controller" method="POST">
+                <c:forEach var="item" items="${itemList}" varStatus="counter" >     
+                        <c:url var="deleteUrl" value="/ProcessServlet" >
+                            <c:param name="btAction" value="del_detail" />
+                            <c:param name="orderID" value="${order.orderID}" />
+                            <c:param name="ID" value="${item.id}" />
+                            <c:param name="txtFromDate" value="${param.txtFromDate}" />
+                            <c:param name="txtToDate" value="${param.txtToDate}" />
+                        </c:url>
+                         <form action="ProcessServlet" method="POST">
                         <tr>
                             <td>
-                                <%= count++ %>
+                               ${counter.count}
                             .</td>
                             <td>
-                                <%= item.getProduct().getProductName() %>
+                                ${item.productID}
                             </td>
                             <td>
-                                <%= item.getUnitItem() %>
+                                ${item.unitItem}
                             </td>
                             <td>
                                 <input type="text" name="txtQuantity" 
-                                       value="<%= item.getQuantity() %>" />
+                                       value="${item.quantity}" />
                             </td>
                             <td>
-                                <%= item.getUnitPrice() %>
+                                ${item.unitPrice}
                             </td>
                             <td>
-                                <%= item.getTotal() %>
+                                ${item.total}
                             </td>
                             <td>
                                 <input type="hidden" name="orderID" 
-                                       value="<%= dto.getOrderID() %>" />
-                                <input type="hidden" name="pk" 
-                                       value="<%= item.getId() %>" />
+                                       value="${order.orderID}" />
+                                <input type="hidden" name="ID" 
+                                       value="${item.id}" />
                                 <input type="hidden" name="txtFromDate" 
-                                       value="<%= fromDate %>" />
+                                       value="${param.txtFromDate}" />
                                 <input type="hidden" name="txtToDate" 
-                                       value="<%= toDate %>" />
+                                       value="${param.txtToDate}" />
                                 <input type="submit" value="Update" name="btAction" />
                             </td>
                             <td align="center" >
-                                <a href="<%= delUrl %>">X</a>
+                                <a href="${deleteUrl}">X</a>
                             </td>
                         </tr>
                          </form>
-                        <%
-                    }
-                
-                %>
+                </c:forEach>       
+                   
                 
                 
             </tbody>
         </table>
-
-        <%
-            
-            String searchUrlRewriting = "Controller?btAction=Search"
-                    + "&txtFromDate=" + fromDate
-                    + "&txtToDate=" + toDate;
-        %>
         
-        <h4>Total: <%= dto.getTotal() %></h4>
+        <c:url var="searchUrlRewriting" value="/ProcessServlet" >
+            <c:param name="btAction" value="Search" />
+            <c:param name="txtFromDate" value="${param.txtFromDate}" />
+            <c:param name="txtToDate" value="${param.txtToDate}" />
+        </c:url>
         
-        <h3><a href="<%= searchUrlRewriting %>">Click here to return search page</a></h3>
+        <h4>Total: ${order.total}</h4>
+        
+        <h3><a href="${searchUrlRewriting}">Click here to return search page</a></h3>
 
         <!--
             REMEMBER TO ADD LINK HERE

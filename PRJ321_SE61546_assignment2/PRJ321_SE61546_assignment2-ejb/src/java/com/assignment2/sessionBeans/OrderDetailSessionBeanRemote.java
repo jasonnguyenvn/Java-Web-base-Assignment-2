@@ -6,9 +6,6 @@
 
 package com.assignment2.sessionBeans;
 
-import com.assignment2.entityBeans.OrderEntity;
-import java.util.Date;
-import java.util.List;
 import javax.ejb.Remote;
 
 /**
@@ -16,10 +13,12 @@ import javax.ejb.Remote;
  * @author Hau
  */
 @Remote
-public interface OrderSessionBeanRemote {
+public interface OrderDetailSessionBeanRemote {
 
-    List searchFromDateToDate(Date fromDate, Date toDate);
+    boolean deleteOrderDetail(int id, String orderID, String loginAccID);
 
-    OrderEntity getOrderByIDAndCustID(String orderID, String customerID);
+    java.util.List getrDetailsByOrderID(String orderID);
+
+    boolean updateQuantity(int id, String orderID, String loginAccID, int newQuantity);
     
 }

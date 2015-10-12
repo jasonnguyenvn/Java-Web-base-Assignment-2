@@ -4,11 +4,16 @@
  * and open the template in the editor.
  */
 
-package com.assignment2.common;
+package com.assignment2.sale.servlets;
 
+import com.assignment2.entityBeans.Account;
+import com.assignment2.entityBeans.OrderEntity;
 import com.assignment2.sessionBeans.AccountSessionBeanLocal;
+import com.assignment2.sessionBeans.OrderDetailSessionBeanLocal;
+import com.assignment2.sessionBeans.OrderSessionBeanLocal;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -23,8 +28,9 @@ import javax.servlet.http.HttpSession;
  *
  * @author Hau
  */
-public class NullServlet extends HttpServlet {
-    
+public class ViewDetailServlet extends HttpServlet {
+    private final String detailPage = "/views/OrderDetails.jsp";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -36,45 +42,60 @@ public class NullServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+        String orderID = request.getParameter("orderID");
+        
         try {
+            Context context = new InitialContext();
+            
             HttpSession session = request.getSession(false);
-            
             if (session == null) {
-                log("test session");
-                response.sendRedirect("ProcessServlet?btAction=loginPage");
-                return;
+                response.sendError(404);
+                return ;
             }
             
-            String loginUser = (String) session.getAttribute("LOGINUSER");
-            String loginPass = (String) session.getAttribute("LOGINPASS");
+            String loginID = (String) session.getAttribute("LOGINUSER");
+            if (loginID == null) {
+                response.sendError(404);
+                return ;
+            }
+            Object accObj = context.lookup("AccountBeanLocalJNDI");
+            AccountSessionBeanLocal accPoji = (AccountSessionBeanLocal) accObj;
             
-            try {
-                Context context = new InitialContext();
-                Object obj = context.lookup("AccountBeanLocalJNDI");
-                
-                AccountSessionBeanLocal poji = (AccountSessionBeanLocal) obj;
-                
-                boolean result = poji.checkLogin(loginUser, loginPass);
-                log(result + " d");
-                String url = "ProcessServlet?btAction=searchPage";
-                if (result == false) {
-                    url = "ProcessServlet?btAction=loginPage";
-                }
-                
-                response.sendRedirect(url);
-                
-                
-            } catch (NamingException ex) {
-                log(ex.getMessage());
-                response.sendError(500);
+            Account orderCust = accPoji.getAccountByAccountID(loginID);
+            if (orderCust == null) {
+                response.sendError(404);
+                return ;
+            }
+            
+            //log("[LOG]: "+ orderID + " " + orderCust.getAccountID());
+            Object obj = context.lookup("OrderBeanLocalJNDI");
+            OrderSessionBeanLocal poji = (OrderSessionBeanLocal) obj;
+            OrderEntity order = poji.getOrderByIDAndCustID(orderID, orderCust.getAccountID());
+            
+            if (order == null) {
+                response.sendError(404);
+                return ;
             }
             
             
-        } finally {
-            out.close();
+            
+            Object obj2 = context.lookup("OrderDetailBeanLocalJNDI");
+            OrderDetailSessionBeanLocal poji2 = (OrderDetailSessionBeanLocal) obj2;
+
+            List detailList = poji2.getrDetailsByOrderID(orderID);
+
+            request.setAttribute("ORDERCUST", orderCust);
+            request.setAttribute("ORDEROBJ", order);
+            request.setAttribute("ITEMLIST", detailList);
+            
+            RequestDispatcher rd = request.getRequestDispatcher(detailPage);
+            rd.forward(request, response);
+            
+        } catch (NamingException e) {
+            log(e.getMessage());
+            response.sendError(500);
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

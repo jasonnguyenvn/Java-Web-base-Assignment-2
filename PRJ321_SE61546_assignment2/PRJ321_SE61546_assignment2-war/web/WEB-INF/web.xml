@@ -20,6 +20,18 @@
         <servlet-name>SignUpServlet</servlet-name>
         <servlet-class>com.assignment2.account.servlets.SignUpServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ViewDetailServlet</servlet-name>
+        <servlet-class>com.assignment2.sale.servlets.ViewDetailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteDetailServlet</servlet-name>
+        <servlet-class>com.assignment2.sale.servlets.DeleteDetailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateDetailServlet</servlet-name>
+        <servlet-class>com.assignment2.sale.servlets.UpdateDetailServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ProcessServlet</servlet-name>
         <url-pattern>/ProcessServlet</url-pattern>
@@ -39,6 +51,18 @@
     <servlet-mapping>
         <servlet-name>SignUpServlet</servlet-name>
         <url-pattern>/actions/SignUpServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewDetailServlet</servlet-name>
+        <url-pattern>/actions/ViewDetailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteDetailServlet</servlet-name>
+        <url-pattern>/actions/DeleteDetailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateDetailServlet</servlet-name>
+        <url-pattern>/actions/UpdateDetailServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

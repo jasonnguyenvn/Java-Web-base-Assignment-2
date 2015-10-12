@@ -6,6 +6,7 @@
 
 package com.assignment2.sessionBeans;
 
+import com.assignment2.entityBeans.Account;
 import javax.ejb.Local;
 
 /**
@@ -18,5 +19,7 @@ public interface AccountSessionBeanLocal {
     boolean checkLogin(String username, String password);
 
     boolean createAccount(String accountID, String customerName, String password, String email);
+
+    Account getAccountByAccountID(String accountID);
     
 }

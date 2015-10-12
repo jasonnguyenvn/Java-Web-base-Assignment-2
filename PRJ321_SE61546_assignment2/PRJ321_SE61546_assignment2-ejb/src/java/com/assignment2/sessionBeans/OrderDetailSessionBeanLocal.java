@@ -6,9 +6,6 @@
 
 package com.assignment2.sessionBeans;
 
-import com.assignment2.entityBeans.OrderEntity;
-import java.util.Date;
-import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -16,10 +13,12 @@ import javax.ejb.Local;
  * @author Hau
  */
 @Local
-public interface OrderSessionBeanLocal {
+public interface OrderDetailSessionBeanLocal {
 
-    List searchFromDateToDate(Date fromDate, Date toDate);
+    boolean deleteOrderDetail(int id, String orderID, String loginAccID);
 
-    OrderEntity getOrderByIDAndCustID(String orderID, String customerID);
+    java.util.List getrDetailsByOrderID(String orderID);
+
+    boolean updateQuantity(int id, String orderID, String loginAccID, int newQuantity);
     
 }

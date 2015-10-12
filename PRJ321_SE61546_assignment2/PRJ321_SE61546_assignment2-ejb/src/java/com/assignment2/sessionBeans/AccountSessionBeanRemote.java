@@ -6,6 +6,7 @@
 
 package com.assignment2.sessionBeans;
 
+import com.assignment2.entityBeans.Account;
 import javax.ejb.Remote;
 
 /**
@@ -18,5 +19,6 @@ public interface AccountSessionBeanRemote {
     boolean checkLogin(String username, String password);
 
     boolean createAccount(String accountID, String customerName, String password, String email);
+    Account getAccountByAccountID(String accountID);
     
 }

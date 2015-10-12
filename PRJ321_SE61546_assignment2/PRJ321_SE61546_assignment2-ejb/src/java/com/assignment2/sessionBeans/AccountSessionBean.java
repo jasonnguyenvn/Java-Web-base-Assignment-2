@@ -61,6 +61,13 @@ public class AccountSessionBean
         
         return true;
     }
+
+    @Override
+    public Account getAccountByAccountID(String accountID) {
+        Account acc = em.find(Account.class, accountID);
+        
+        return acc;
+    }
     
     
     

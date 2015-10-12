@@ -24,6 +24,11 @@ public class ProcessServlet extends HttpServlet {
     private final String searchServlet = "actions/SearchServlet";
     private final String signUpPage = "views/signUp.html";
     private final String signUpServlet = "actions/SignUpServlet";
+    private final String viewDetailServlet = "actions/ViewDetailServlet";
+    private final String deleteDetailServlet = "actions/DeleteDetailServlet";
+    private final String searchPage = "views/search.jsp";
+    private final String loginPage = "views/login.html";
+    private final String updateDetailServlet = "actions/UpdateDetailServlet";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -59,7 +64,22 @@ public class ProcessServlet extends HttpServlet {
             }  else if (button.equals("Sign Up!")) {
                 RequestDispatcher rd = request.getRequestDispatcher(signUpServlet);
                 rd.forward(request, response);
-            } 
+            } else if (button.equals("view_detail")) {
+                RequestDispatcher rd = request.getRequestDispatcher(viewDetailServlet);
+                rd.forward(request, response);
+            }  else if (button.equals("del_detail")) {
+                RequestDispatcher rd = request.getRequestDispatcher(deleteDetailServlet);
+                rd.forward(request, response);
+            }  else if (button.equals("searchPage")) {
+                RequestDispatcher rd = request.getRequestDispatcher(searchPage);
+                rd.forward(request, response);
+            } else if (button.equals("loginPage")) {
+                RequestDispatcher rd = request.getRequestDispatcher(loginPage);
+                rd.forward(request, response);
+            } else if (button.equals("Update")) {
+                RequestDispatcher rd = request.getRequestDispatcher(updateDetailServlet);
+                rd.forward(request, response);
+            }
             
         } finally {
             out.close();

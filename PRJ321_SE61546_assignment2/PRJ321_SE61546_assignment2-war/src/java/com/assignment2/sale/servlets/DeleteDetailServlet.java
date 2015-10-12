@@ -4,9 +4,10 @@
  * and open the template in the editor.
  */
 
-package com.assignment2.common;
+package com.assignment2.sale.servlets;
 
-import com.assignment2.sessionBeans.AccountSessionBeanLocal;
+import com.assignment2.sale.OrderDetailDeleteError;
+import com.assignment2.sessionBeans.OrderDetailSessionBeanLocal;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.naming.Context;
@@ -23,8 +24,9 @@ import javax.servlet.http.HttpSession;
  *
  * @author Hau
  */
-public class NullServlet extends HttpServlet {
-    
+public class DeleteDetailServlet extends HttpServlet {
+    private final String erroPage = "/actions/ViewDetailServlet";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -36,44 +38,66 @@ public class NullServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+        
+        String orderID = request.getParameter("orderID");
+        String txtFromDate = request.getParameter("txtFromDate");
+        String txtToDate = request.getParameter("txtToDate");
+        String pk = request.getParameter("ID");
+        int id = -1;
         try {
-            HttpSession session = request.getSession(false);
+            id = Integer.parseInt(pk);
+        } catch (NumberFormatException ex) {
+            response.sendError(404);
+        }
+        
+        if (id < 0) {
+            response.sendError(404);
+            return ;
+        }
+        
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return ;
+        }
+
+        String loginID = (String) session.getAttribute("LOGINUSER");
+        if (loginID == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return ;
+        }
+        
+        try {
+            Context context = new InitialContext();
+            Object obj = context.lookup("OrderDetailBeanLocalJNDI");
             
-            if (session == null) {
-                log("test session");
-                response.sendRedirect("ProcessServlet?btAction=loginPage");
+            OrderDetailSessionBeanLocal poji = (OrderDetailSessionBeanLocal) obj;
+            boolean result = poji.deleteOrderDetail(id, orderID, loginID);
+            
+            if (result == false ) {
+                OrderDetailDeleteError errorObj = new OrderDetailDeleteError();
+                errorObj.setCouldNotDeleteOrderDetail("Cannot delete this item. "
+                        + "Please call software developer to sovle this problem.");
+                request.setAttribute("ERROROBJ", errorObj);
+                RequestDispatcher dr = request.getRequestDispatcher(erroPage);
+                dr.forward(request, response);
                 return;
             }
             
-            String loginUser = (String) session.getAttribute("LOGINUSER");
-            String loginPass = (String) session.getAttribute("LOGINPASS");
+            String urlRewriting = "ProcessServlet?btAction=view_detail&orderID="
+                                    + orderID;
             
-            try {
-                Context context = new InitialContext();
-                Object obj = context.lookup("AccountBeanLocalJNDI");
-                
-                AccountSessionBeanLocal poji = (AccountSessionBeanLocal) obj;
-                
-                boolean result = poji.checkLogin(loginUser, loginPass);
-                log(result + " d");
-                String url = "ProcessServlet?btAction=searchPage";
-                if (result == false) {
-                    url = "ProcessServlet?btAction=loginPage";
-                }
-                
-                response.sendRedirect(url);
-                
-                
-            } catch (NamingException ex) {
-                log(ex.getMessage());
-                response.sendError(500);
+            if (txtFromDate != null && txtToDate != null) {
+                urlRewriting += "&txtFromDate=" + txtFromDate 
+                        + "&txtToDate=" + txtToDate;
             }
             
+            response.sendRedirect(urlRewriting);
             
-        } finally {
-            out.close();
+            
+        } catch (NamingException e) {
+            log(e.getMessage());
+            response.sendError(500);
         }
     }
 
